@@ -24,6 +24,9 @@ function init() {
   gui.add(this, "saveShaderVert");
   gui.add(this, "saveShaderFrag");
   gui.add(this, "resetCamera");
+  var meshFolder = gui.addFolder("Mesh");
+  meshFolder.add(this, "setMeshPlane");
+  meshFolder.add(this, "setMeshSphere");
   var animationFolder = gui.addFolder("Animation");
   animationFolder.add(this, "offsetRateX");
   animationFolder.add(this, "offsetRateY");
@@ -43,19 +46,14 @@ function init() {
     container,
     {
       type: "FreeCam",
-      phi: 0,
+      phi: Math.PI/2,
       theta: Math.PI/2,
       r: 2,
       rMax: 10
     }
   );
 
-  var planeGeo = new THREE.PlaneGeometry(1,1);
-  mesh = new THREE.Mesh(planeGeo);
-  mesh.rotateY(Math.PI/2);
-  updateShader();
-  scene.add(mesh);
-
+  setMeshPlane();
 
   var bgVert = "\
   varying vec2 vPos; \
@@ -121,6 +119,32 @@ function render() {
   renderer.render(scene, camera);
 }
 
+function removeCurrentMesh() {
+  var children = this.scene.children;
+  for (var i=children.length-1; i>=0; i--) {
+    var child = children[i];
+    if (child.name=="main_mesh") {
+      scene.remove(child);
+    }
+  }
+}
+function setMeshPlane() {
+  removeCurrentMesh();
+  var geo = new THREE.PlaneGeometry(1,1);
+  mesh = new THREE.Mesh(geo);
+  mesh.name = "main_mesh";
+  updateShader();
+  scene.add(mesh);
+}
+function setMeshSphere() {
+  removeCurrentMesh();
+  var geo = new THREE.SphereGeometry(0.5,64,64);
+  mesh = new THREE.Mesh(geo);
+  mesh.name = "main_mesh";
+  updateShader();
+  scene.add(mesh);
+}
+
 function updateShader() {
   var material = new THREE.ShaderMaterial({
     uniforms: {
@@ -158,7 +182,7 @@ function saveShader(type) {
 }
 function resetCamera() {
   controls.r = 2;
-  controls.phi = 0;
+  controls.phi = Math.PI/2;
   controls.theta = Math.PI/2;
 }
 
