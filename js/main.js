@@ -116,3 +116,20 @@ function resetOffset() {
   offset.x = 0;
   offset.y = 0;
 }
+
+document.getElementById("vertShader").addEventListener("keydown", handleKeyDownVert, false);
+document.getElementById("fragShader").addEventListener("keydown", handleKeyDownFrag, false);
+function handleKeyDownVert(e) { handleKeyDown("vertex", e); }
+function handleKeyDownFrag(e) { handleKeyDown("fragment", e); }
+function handleKeyDown(type, e) {
+  var source = document.getElementById(type=="vertex" ? "vertShader" : "fragShader");
+
+  // handle tab; insert two spaces
+  if (e.key=="Tab" || e.keyCode==9) {
+    e.preventDefault();
+    var ss = source.selectionStart, se = source.selectionEnd;
+    source.value = source.value.substring(0, ss) + "  " + source.value.substring(se);
+    source.selectionStart = ss+2;
+    source.selectionEnd = ss+2;
+  }
+}
