@@ -4,17 +4,41 @@ html, body {
   padding: 0;
   margin: 0;
   overflow: hidden;
+  background-color: #333;
+  font-family: 'Roboto Mono', monospace;
+}
+
+#bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height: 100%;
+  width: 50%;
+  color: #444;
+  font-size: 32px;
+}
+.bgPanel {
+  height: 50%;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #shaders {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
   width: 50%;
   height: 100%;
   margin: 0;
   padding: 0;
   display: inline-block;
-  font-family: 'Roboto Mono', monospace;
-  border-right: 1px solid #666;
   box-sizing: border-box;
+  background: transparent;
 }
 
 .textbox {
@@ -24,56 +48,21 @@ html, body {
   border: none;
   resize: none;
   outline-width: 0;
-  background-color: #333;
   color: #ccc;
+  background: transparent;
 }
 #vertShader {
   border-bottom: 1px solid #666;
 }
 
 #container {
+  position: absolute;
+  left: 50%;
+  top: 0;
   width: 50%;
   height: 100%;
   margin: 0;
   padding: 0;
   display: inline-block;
   text-align: center;
-}
-
-.uibutton {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  z-index: 5;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #333;
-  border: 1px solid #666;
-  cursor: pointer;
-}
-#runButton {
-  top: 50%;
-}
-#saveVertButton {
-  top: 25%;
-}
-#saveFragButton {
-  top: 75%;
-}
-
-.buttonIcon {
-  width: 24px;
-  height: 24px;
-  opacity: 0.4;
-  transition: opacity 200ms ease;
-  -webkit-transition: opacity 200ms ease;
-}
-.buttonIcon:hover {
-  opacity: 1.0;
-}
-#runButtonIcon {
-  background-image: url('../img/play_1x.png');
-}
-#saveVertButtonIcon, #saveFragButtonIcon {
-  background-image: url('../img/save_1x.png');
 }
