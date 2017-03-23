@@ -21,8 +21,8 @@ function init() {
   offsetRateX = 0.0, offsetRateY = 0.0;
   gui = new dat.GUI();
   gui.add(this, "updateShader");
-  gui.add(this, "saveShaderVert");
-  gui.add(this, "saveShaderFrag");
+  gui.add(this, "saveVertShader");
+  gui.add(this, "saveFragShader");
   gui.add(this, "resetCamera");
   var meshFolder = gui.addFolder("Mesh");
   meshFolder.add(this, "setMeshPlane");
@@ -159,8 +159,8 @@ function updateShader() {
   mesh.material = material;
 }
 
-function saveShaderVert() { saveShader("vertex"); }
-function saveShaderFrag() { saveShader("fragment"); }
+function saveVertShader() { saveShader("vertex"); }
+function saveFragShader() { saveShader("fragment"); }
 function saveShader(type) {
   var fname = type+"Shader.txt";
   var source = document.getElementById(type=="vertex" ? "vertShader" : "fragShader");
