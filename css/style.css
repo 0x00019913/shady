@@ -25,7 +25,7 @@ html, body {
   resize: none;
   outline-width: 0;
   background-color: #333;
-  color: #bbb;
+  color: #ccc;
 }
 #vertShader {
   border-bottom: 1px solid #666;
@@ -40,27 +40,40 @@ html, body {
   text-align: center;
 }
 
-#runButton {
+.uibutton {
   width: 24px;
   height: 24px;
   position: absolute;
   z-index: 5;
-  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #333;
   border: 1px solid #666;
   cursor: pointer;
 }
+#runButton {
+  top: 50%;
+}
+#saveVertButton {
+  top: 25%;
+}
+#saveFragButton {
+  top: 75%;
+}
 
-#runButtonIcon {
+.buttonIcon {
   width: 24px;
   height: 24px;
-  background-image: url('../img/play_1x.png');
   opacity: 0.4;
   transition: opacity 200ms ease;
   -webkit-transition: opacity 200ms ease;
 }
-#runButtonIcon:hover {
+.buttonIcon:hover {
   opacity: 1.0;
+}
+#runButtonIcon {
+  background-image: url('../img/play_1x.png');
+}
+#saveVertButtonIcon, #saveFragButtonIcon {
+  background-image: url('../img/save_1x.png');
 }
