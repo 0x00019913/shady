@@ -2,6 +2,7 @@ var width, height;
 var container, camera, scene, renderer, controls;
 var mesh, offset, offsetRateX, offsetRateY;
 var gui;
+var bgColor0, bgColor1;
 container = document.getElementById('container');
 
 init();
@@ -19,9 +20,22 @@ function init() {
   offset = new THREE.Vector2();
   offsetRateX = 0.0, offsetRateY = 0.0;
   gui = new dat.GUI();
-  gui.add(this, "offsetRateX");
-  gui.add(this, "offsetRateY");
-  gui.add(this, "resetOffset");
+  gui.add(this, "updateShader");
+  gui.add(this, "saveShaderVert");
+  gui.add(this, "saveShaderFrag");
+  var animationFolder = gui.addFolder("Animation");
+  animationFolder.add(this, "offsetRateX");
+  animationFolder.add(this, "offsetRateY");
+  animationFolder.add(this, "resetOffset");
+  var backgroundFolder = gui.addFolder("Background");
+  bgColor0 = "#2d3239";
+  bgColor1 = "#c7dae8";
+  var bgColor0Uni = new THREE.Color(bgColor0);
+  var bgColor1Uni = new THREE.Color(bgColor1);
+  backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
+  backgroundFolder.addColor(this, "bgColor1").onChange(setColor1Uni);
+  function setColor0Uni() { bgColor0Uni.set(bgColor0); }
+  function setColor1Uni() { bgColor1Uni.set(bgColor1); }
 
   controls = new Controls(
     camera,
@@ -30,15 +44,47 @@ function init() {
       type: "FreeCam",
       phi: 0,
       theta: Math.PI/2,
-      r: 2
+      r: 2,
+      rMax: 10
     }
   );
 
   var planeGeo = new THREE.PlaneGeometry(1,1);
   mesh = new THREE.Mesh(planeGeo);
   mesh.rotateY(Math.PI/2);
-  updateMaterial();
+  updateShader();
   scene.add(mesh);
+
+
+  var bgVert = "\
+  varying vec2 vPos; \
+  uniform float size; \
+  void main() { \
+    vPos = position.xy / (size*2.0)  + 0.5; \
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); \
+  }";
+  var bgFrag = "\
+  varying vec2 vPos; \
+  uniform vec3 color0; \
+  uniform vec3 color1; \
+  \
+  void main() {\
+    vec3 color = mix(color0, color1, vPos.y); \
+    gl_FragColor = vec4(color, 1.0); \
+  }";
+  var bgSize = 12;
+  var bgGeo = new THREE.SphereGeometry(bgSize, 32, 32);
+  var bgMat = new THREE.ShaderMaterial({
+    uniforms: {
+      color0: { value: bgColor0Uni },
+      color1: { value: bgColor1Uni },
+      size: { value: bgSize }
+    },
+    vertexShader: bgVert,
+    fragmentShader: bgFrag,
+    side: THREE.DoubleSide
+  });
+  scene.add(new THREE.Mesh(bgGeo, bgMat));
 
   /* RENDER */
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -74,7 +120,7 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function updateMaterial() {
+function updateShader() {
   var material = new THREE.ShaderMaterial({
     uniforms: {
       offset: { value: offset }
@@ -86,10 +132,8 @@ function updateMaterial() {
   mesh.material = material;
 }
 
-document.getElementById("runButton").onclick = updateMaterial;
-document.getElementById("saveVertButton").onclick = function() { saveShader("vertex"); }
-document.getElementById("saveFragButton").onclick = function() { saveShader("fragment"); }
-
+function saveShaderVert() { saveShader("vertex"); }
+function saveShaderFrag() { saveShader("fragment"); }
 function saveShader(type) {
   var fname = type+"Shader.txt";
   var source = document.getElementById(type=="vertex" ? "vertShader" : "fragShader");
@@ -131,5 +175,9 @@ function handleKeyDown(type, e) {
     source.value = source.value.substring(0, ss) + "  " + source.value.substring(se);
     source.selectionStart = ss+2;
     source.selectionEnd = ss+2;
+  }
+  if (e.key=="Enter" && e.shiftKey) {
+    e.preventDefault();
+    updateShader();
   }
 }
