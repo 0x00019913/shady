@@ -34,8 +34,8 @@ function init() {
   animationFolder.add(this, "resetOffset");
   animationFolder.add(this, "resetOffsetRates");
   var backgroundFolder = gui.addFolder("Background");
-  bgColor0 = "#2d3239";
-  bgColor1 = "#c7dae8";
+  bgColor0 = "#23272d";
+  bgColor1 = "#64717a";
   var bgColor0Uni = new THREE.Color(bgColor0);
   var bgColor1Uni = new THREE.Color(bgColor1);
   backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
