@@ -23,6 +23,7 @@ function init() {
   gui.add(this, "updateShader");
   gui.add(this, "saveShaderVert");
   gui.add(this, "saveShaderFrag");
+  gui.add(this, "resetCamera");
   var animationFolder = gui.addFolder("Animation");
   animationFolder.add(this, "offsetRateX");
   animationFolder.add(this, "offsetRateY");
@@ -154,6 +155,11 @@ function saveShader(type) {
       window.URL.revokeObjectURL(url);
     });
   }
+}
+function resetCamera() {
+  controls.r = 2;
+  controls.phi = 0;
+  controls.theta = Math.PI/2;
 }
 
 function resetOffset() {
