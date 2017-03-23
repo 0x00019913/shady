@@ -49,7 +49,9 @@ function init() {
       phi: Math.PI/2,
       theta: Math.PI/2,
       r: 2,
-      rMax: 10
+      rMax: 10,
+      xPanRate: 0,
+      yPanRate: 0
     }
   );
 

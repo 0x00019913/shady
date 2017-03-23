@@ -86,20 +86,19 @@ Controls = function(camera, domElement, params) {
 
   function onMouseMove(e) {
     // calculate difference in mouse position between this and the previous events
-    if ("movementX" in e) {
+    /*if ("movementX" in e) {
       dX = e.movementX;
       if (Math.abs(dX)>100) dX = 0;
       dY = e.movementY;
       if (Math.abs(dY)>100) dY = 0;
     }
-    else {
-      mouseXprev = mouseX;
-      mouseYprev = mouseY;
-      mouseX = (e.clientX / _this.domElement.offsetWidth) * 2 - 1;
-      mouseY = (e.clientY / _this.domElement.offsetHeight) * 2 - 1;
-      dX = mouseX-mouseXprev;
-      dY = mouseY-mouseYprev;
-    }
+    else {*/
+    mouseXprev = mouseX;
+    mouseYprev = mouseY;
+    mouseX = (e.clientX / _this.domElement.offsetWidth) * 2 - 1;
+    mouseY = (e.clientY / _this.domElement.offsetHeight) * 2 - 1;
+    dX = mouseX-mouseXprev;
+    dY = mouseY-mouseYprev;
 
     handleMousemove();
 
@@ -249,8 +248,8 @@ Controls.prototype.setDefaults = function(type) {
     this.phi = 0;
     this.rRate = 0.1;
 
-    this.thetaRate = -0.02;
-    this.phiRate = 0.02;
+    this.thetaRate = -4.0;
+    this.phiRate = 4.0;
     this.xPanRate = 0.01;
     this.yPanRate = 0.01;
 
