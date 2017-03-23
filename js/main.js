@@ -1,6 +1,6 @@
 var width, height;
 var container, camera, scene, renderer, controls;
-var mesh, offset, offsetRateX, offsetRateY;
+var mesh, offset, offsetRateX, offsetRateY, offsetRateControls = [];
 var gui;
 var bgColor0, bgColor1;
 container = document.getElementById('container');
@@ -17,8 +17,8 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0);
 
-  offset = new THREE.Vector2();
-  offsetRateX = 0.0, offsetRateY = 0.0;
+  offset = new THREE.Vector3();
+  offsetRateX = 0.0, offsetRateY = 0.0, offsetRateZ = 0.0;
   gui = new dat.GUI();
   gui.add(this, "updateShader");
   gui.add(this, "saveVertShader");
@@ -28,9 +28,11 @@ function init() {
   meshFolder.add(this, "setMeshPlane");
   meshFolder.add(this, "setMeshSphere");
   var animationFolder = gui.addFolder("Animation");
-  animationFolder.add(this, "offsetRateX");
-  animationFolder.add(this, "offsetRateY");
+  offsetRateControls[0] = animationFolder.add(this, "offsetRateX");
+  offsetRateControls[1] = animationFolder.add(this, "offsetRateY");
+  offsetRateControls[2] = animationFolder.add(this, "offsetRateZ");
   animationFolder.add(this, "resetOffset");
+  animationFolder.add(this, "resetOffsetRates");
   var backgroundFolder = gui.addFolder("Background");
   bgColor0 = "#2d3239";
   bgColor1 = "#c7dae8";
@@ -118,6 +120,7 @@ function render() {
   controls.update();
   offset.x += offsetRateX;
   offset.y += offsetRateY;
+  offset.z += offsetRateZ;
   renderer.render(scene, camera);
 }
 
@@ -191,6 +194,13 @@ function resetCamera() {
 function resetOffset() {
   offset.x = 0;
   offset.y = 0;
+  offset.z = 0;
+}
+function resetOffsetRates() {
+  offsetRateX = 0;
+  offsetRateY = 0;
+  offsetRateZ = 0;
+  for (var i=0; i<offsetRateControls.length; i++) offsetRateControls[i].updateDisplay();
 }
 
 document.getElementById("vertShader").addEventListener("keydown", handleKeyDownVert, false);

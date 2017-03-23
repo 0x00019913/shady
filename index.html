@@ -20,21 +20,21 @@
     <div id="shaders">
       <textarea id="vertShader" class="textbox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 /* vertex shader */
-varying vec2 vPos;
+varying vec3 vPos;
 
 void main() {
-  vPos = position.xy;
+  vPos = position;
   vPos += 0.5; /* positions in unit plane go from -0.5 to 0.5 */
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }</textarea>
       <textarea id="fragShader" class="textbox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 /* fragment shader */
-uniform vec2 offset;
+uniform vec3 offset;
 
-varying vec2 vPos;
+varying vec3 vPos;
 
 void main() {
-  gl_FragColor = vec4(vPos+offset, 1.0, 1.0);
+  gl_FragColor = vec4(vPos.xy+offset.xy, 1.0, 1.0);
 }</textarea>
     </div><div id="container">
     </div>
