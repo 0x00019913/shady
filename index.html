@@ -18,24 +18,20 @@
       </div>
     </div>
     <div id="shaders">
-      <textarea id="vertShader" class="textbox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-/* vertex shader */
-varying vec3 vPos;
-
-void main() {
-  vPos = position;
-  vPos += 0.5; /* positions in unit plane go from -0.5 to 0.5 */
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}</textarea>
-      <textarea id="fragShader" class="textbox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-/* fragment shader */
-uniform vec3 offset;
-
-varying vec3 vPos;
-
-void main() {
-  gl_FragColor = vec4(vPos.xy+offset.xy, 1.0, 1.0);
-}</textarea>
+      <textarea
+        id="vertShader"
+        class="textbox"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"></textarea>
+      <textarea
+        id="fragShader"
+        class="textbox"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"></textarea>      
     </div><div id="container">
     </div>
 
