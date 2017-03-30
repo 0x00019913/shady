@@ -292,6 +292,10 @@ function loadSimplexNoise() {
   const float F2 = 0.5*(sqrt(3.0)-1.0);\n\
   const float G2 = (3.0-sqrt(3.0))/6.0;\n\
   \n\
+  /* simplex noise shaders combine some of the code in the Gustavson paper,\n\
+     http://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf,\n\
+     and the code in his repo,\n\
+     https://github.com/stegu/webgl-noise/ */\n\
   float simplex(vec2 v) {\n\
   \n\
     /* base corner */\n\
@@ -364,6 +368,10 @@ function loadFBMNoise() {
   const float F2 = 0.5*(sqrt(3.0)-1.0);\n\
   const float G2 = (3.0-sqrt(3.0))/6.0;\n\
   \n\
+  /* simplex noise shaders combine some of the code in the Gustavson paper,\n\
+     http://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf,\n\
+     and the code in his repo,\n\
+     https://github.com/stegu/webgl-noise/ */\n\
   float simplex(vec2 v) {\n\
   \n\
     /* base corner */\n\
@@ -470,6 +478,10 @@ function loadMovingClouds() {
   const float F2 = 0.5*(sqrt(3.0)-1.0);\n\
   const float G2 = (3.0-sqrt(3.0))/6.0;\n\
   \n\
+  /* simplex noise shaders combine some of the code in the Gustavson paper,\n\
+     http://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf,\n\
+     and the code in his repo,\n\
+     https://github.com/stegu/webgl-noise/ */\n\
   float simplex(vec2 v) {\n\
   \n\
     /* base corner */\n\
