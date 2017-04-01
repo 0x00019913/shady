@@ -64,7 +64,7 @@ function init() {
   );
 
 
-  loadFraunhoferDiffraction();
+  loadDefault();
   setMeshPlane();
 
   var bgVert = "\
