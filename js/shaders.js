@@ -86,7 +86,7 @@ void main() {\n\
   gl_FragColor = vec4(level, 1.0);\n\
 }";
 
-var FBM_noise_vert = "\
+var fbm_noise_vert = "\
 /* vertex shader */\n\
 varying vec3 vPos;\n\
 \n\
@@ -95,7 +95,7 @@ void main() {\n\
   vPos += 0.5;\n\
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\
 }";
-var FBM_noise_frag = "\
+var fbm_noise_frag = "\
 /* fragment shader */\n\
 varying vec3 vPos;\n\
 \n\
@@ -302,4 +302,66 @@ void main() {\n\
   \n\
   /* output */\n\
   gl_FragColor = vec4(color, 1.0);\n\
+}";
+
+var fraunhofer_diffraction_vert = "\
+/* vertex shader */\n\
+varying vec3 vPos;\n\
+\n\
+void main() {\n\
+  vPos = position;\n\
+  vPos += 0.5;\n\
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\
+}";
+var fraunhofer_diffraction_frag = "\
+/* fragment shader */\n\
+/* Fraunhofer diffraction with a square aperture */\n\
+/* based on https://en.wikipedia.org/wiki/Fraunhofer_diffraction_equation */\n\
+/* may behave somewhat incorrectly, it's 2:46AM at the time of writing XD */\n\
+\n\
+#define PI 3.1415926535897932384626433832795\n\
+\n\
+varying vec3 vPos;\n\
+\n\
+void main() {\n\
+  /* number of integration steps per fragment */\n\
+  const int n = 16;\n\
+  const float d = 1.0/float(n);\n\
+  \n\
+  /* distance of source from plane where diffraction is viewed */\n\
+  float dist = 15.0;\n\
+  /* remap [0.0, 1.0] coords to [-0.5, 0.5] range */\n\
+  vec2 pos = vPos.xy - 0.5;\n\
+  pos /= length(vec3(pos, dist));\n\
+  \n\
+  /* A is amplitude, spatially- and time-invariant across the aperture */\n\
+  float A = 5.0;\n\
+  /* aperture size in x, y (aperture is implicitly rectangular) */\n\
+  vec2 s = vec2(0.5, 0.5);\n\
+  /* wavenumber equals 2pi/lambda */\n\
+  float k = 2.0 * PI / 0.0005;\n\
+  \n\
+  /* position in aperture while integrating */\n\
+  vec2 apos;\n\
+  /* output amplitude (complex) */\n\
+  vec2 level = vec2(0.0);\n\
+  /* increment at every integration step */\n\
+  vec2 increment = vec2(0.0);\n\
+  /* exponent in Fraunhofer diffraction formula */\n\
+  float exponent;\n\
+  \n\
+  for (int yp=0; yp<n; yp++) {\n\
+    for (int xp=0; xp<n; xp++) {\n\
+      /* remap xp and yp to a square of size s centered on origin */\n\
+      apos = ((vec2(float(xp),float(yp)) + 0.5) / float(n)/2.0 - 1.0) * s * 0.5;\n\
+      /* calculate integrand */\n\
+      exponent = -1.0 * k * dot(apos, pos);\n\
+      increment.x = A * cos(exponent);\n\
+      increment.y = A * sin(exponent);\n\
+      /* accumulate */\n\
+      level += increment * d * d;\n\
+    }\n\
+  }\n\
+  \n\
+  gl_FragColor = vec4(length(level), 0.0, 0.0, 1.0);\n\
 }";

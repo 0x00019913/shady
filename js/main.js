@@ -29,6 +29,7 @@ function init() {
   loadFolder.add(this, "loadSimplexNoise");
   loadFolder.add(this, "loadFBMNoise");
   loadFolder.add(this, "loadMovingClouds");
+  loadFolder.add(this, "loadFraunhoferDiffraction");
   var meshFolder = gui.addFolder("Mesh");
   meshFolder.add(this, "setMeshPlane");
   meshFolder.add(this, "setMeshSphere");
@@ -63,7 +64,7 @@ function init() {
   );
 
 
-  loadDefault();
+  loadFraunhoferDiffraction();
   setMeshPlane();
 
   var bgVert = "\
@@ -258,8 +259,8 @@ function loadSimplexNoise() {
 function loadFBMNoise() {
   resetAnimation();
 
-  document.getElementById("vertShader").value = FBM_noise_vert;
-  document.getElementById("fragShader").value = FBM_noise_frag;
+  document.getElementById("vertShader").value = fbm_noise_vert;
+  document.getElementById("fragShader").value = fbm_noise_frag;
   updateShader();
 }
 
@@ -269,5 +270,13 @@ function loadMovingClouds() {
 
   document.getElementById("vertShader").value = clouds_vert;
   document.getElementById("fragShader").value = clouds_frag;
+  updateShader();
+}
+
+function loadFraunhoferDiffraction() {
+  resetAnimation();
+
+  document.getElementById("vertShader").value = fraunhofer_diffraction_vert;
+  document.getElementById("fragShader").value = fraunhofer_diffraction_frag;
   updateShader();
 }
