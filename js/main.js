@@ -1,6 +1,7 @@
 var width, height;
 var container, camera, scene, renderer, controls;
-var mesh, offset, offsetRateX, offsetRateY, offsetRateControls = [];
+var mesh;
+var offset, offsetRateX, offsetRateY, offsetRateZ, offsetRateControls = [];
 var gui;
 var bgColor0, bgColor1;
 container = document.getElementById('container');
@@ -37,6 +38,9 @@ function init() {
   offsetRateControls[0] = animationFolder.add(this, "offsetRateX");
   offsetRateControls[1] = animationFolder.add(this, "offsetRateY");
   offsetRateControls[2] = animationFolder.add(this, "offsetRateZ");
+  offsetRateControls[0].__precision = 5;
+  offsetRateControls[1].__precision = 5;
+  offsetRateControls[2].__precision = 5;
   animationFolder.add(this, "resetOffset");
   animationFolder.add(this, "resetOffsetRates");
   var backgroundFolder = gui.addFolder("Background");
@@ -207,15 +211,15 @@ function resetOffset() {
   offset.y = 0;
   offset.z = 0;
 }
-function resetOffsetRates() {
-  offsetRateX = 0;
-  offsetRateY = 0;
-  offsetRateZ = 0;
+function resetOffsetRates(x, y, z) {
+  offsetRateX = x===undefined ? 0 : x;
+  offsetRateY = y===undefined ? 0 : y;
+  offsetRateZ = z===undefined ? 0 : z;
   for (var i=0; i<offsetRateControls.length; i++) offsetRateControls[i].updateDisplay();
 }
 
-function resetAnimation() {
-  resetOffsetRates();
+function resetAnimation(xr, yr, zr) {
+  resetOffsetRates(xr, yr, zr);
   resetOffset();
 }
 
@@ -265,8 +269,7 @@ function loadFBMNoise() {
 }
 
 function loadMovingClouds() {
-  resetAnimation();
-  offsetRateY = 0.001;
+  resetAnimation(0, 0.001, 0);
 
   document.getElementById("vertShader").value = clouds_vert;
   document.getElementById("fragShader").value = clouds_frag;
