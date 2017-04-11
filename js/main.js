@@ -1,11 +1,10 @@
 var width, height;
 var container, camera, scene, renderer, controls;
 var mesh;
-var offset, offsetRateX, offsetRateY, offsetRateZ, offsetRateControls = [];
+var offset, offsetRateX, offsetRateY, offsetRateZ, offsetRateControls;
 var gui;
-var bgColor0, bgColor1;
-var bgColor0Uni = new THREE.Color(), bgColor1Uni = new THREE.Color();
-var bgColorControllers = [];
+var bgColor0, bgColor1, bgColor0Uni, bgColor1Uni;
+var bgColorControls;
 container = document.getElementById('container');
 
 init();
@@ -38,6 +37,7 @@ function init() {
   meshFolder.add(this, "setMeshPlane");
   meshFolder.add(this, "setMeshSphere");
   var animationFolder = gui.addFolder("Animation");
+  offsetRateControls = [];
   offsetRateControls[0] = animationFolder.add(this, "offsetRateX");
   offsetRateControls[1] = animationFolder.add(this, "offsetRateY");
   offsetRateControls[2] = animationFolder.add(this, "offsetRateZ");
@@ -51,9 +51,12 @@ function init() {
   // the other a THREE.Color to pass as a uniform (the color displayed in the
   // gui feeds off the string, but changing the field also updates the
   // THREE.Color, see below)
+  bgColor0Uni = new THREE.Color();
+  bgColor1Uni = new THREE.Color();
+  bgColorControls = [];
   resetBackground();
-  bgColorControllers[0] = backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
-  bgColorControllers[1] = backgroundFolder.addColor(this, "bgColor1").onChange(setColor1Uni);
+  bgColorControls[0] = backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
+  bgColorControls[1] = backgroundFolder.addColor(this, "bgColor1").onChange(setColor1Uni);
   backgroundFolder.add(this, "resetBackground");
 
   // set up controls; see setDefaults() in controls.js for settable parameters
@@ -252,7 +255,7 @@ function resetBackground() {
   setColor0Uni();
   bgColor1 = "#64717a";
   setColor1Uni();
-  for (var i=0; i<bgColorControllers.length; i++) bgColorControllers[i].updateDisplay();
+  for (var i=0; i<bgColorControls.length; i++) bgColorControls[i].updateDisplay();
 }
 
 // need to make it so that tab doesn't leave the text field and enable
