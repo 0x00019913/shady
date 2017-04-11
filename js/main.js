@@ -10,14 +10,15 @@ init();
 animate();
 
 function init() {
+  // viewport setup
   height = container.offsetHeight;
   width = container.offsetWidth;
 
   camera = new THREE.PerspectiveCamera(45, width/height, .1, 100000);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0);
 
+  // gui
   offset = new THREE.Vector3();
   offsetRateX = 0.0, offsetRateY = 0.0, offsetRateZ = 0.0;
   gui = new dat.GUI();
@@ -44,6 +45,10 @@ function init() {
   animationFolder.add(this, "resetOffset");
   animationFolder.add(this, "resetOffsetRates");
   var backgroundFolder = gui.addFolder("Background");
+  // have to keep two copies of each color - one a string to use for the gui,
+  // the other a THREE.Color to pass as a uniform (the color displayed in the
+  // gui feeds off the string, but changing the field also updates the
+  // THREE.Color, see below)
   bgColor0 = "#23272d";
   bgColor1 = "#64717a";
   var bgColor0Uni = new THREE.Color(bgColor0);
@@ -53,6 +58,7 @@ function init() {
   function setColor0Uni() { bgColor0Uni.set(bgColor0); }
   function setColor1Uni() { bgColor1Uni.set(bgColor1); }
 
+  // set up controls; see setDefaults() in controls.js for settable parameters
   controls = new Controls(
     camera,
     container,
@@ -67,10 +73,11 @@ function init() {
     }
   );
 
-
+  // load default shader and plane as default mesh
   loadDefault();
   setMeshPlane();
 
+  // set up background sphere and its shader
   var bgVert = "\
   varying vec2 vPos; \
   uniform float size; \
@@ -84,9 +91,12 @@ function init() {
   uniform vec3 color1; \
   \
   void main() {\
+    /* linearly interpolate between the two colors from top to bottom */ \
     vec3 color = mix(color0, color1, vPos.y); \
     gl_FragColor = vec4(color, 1.0); \
   }";
+  // make this greater than rMax in the controls; don't want a user to zoom
+  // outside the enclosing sphere
   var bgSize = 12;
   var bgGeo = new THREE.SphereGeometry(bgSize, 32, 32);
   var bgMat = new THREE.ShaderMaterial({
@@ -129,6 +139,7 @@ function animate() {
 }
 function render() {
   if (!camera || !scene) return;
+  // those controls aren't going to update themselves, you know
   controls.update();
   offset.x += offsetRateX;
   offset.y += offsetRateY;
@@ -136,6 +147,9 @@ function render() {
   renderer.render(scene, camera);
 }
 
+// manually delete the old mesh; the object is simple and this is easier, more
+// readable, and possibly even faster than storing all possible meshes at once
+// and toggling their visibility and whatnot
 function removeCurrentMesh() {
   var children = this.scene.children;
   for (var i=children.length-1; i>=0; i--) {
@@ -145,6 +159,7 @@ function removeCurrentMesh() {
     }
   }
 }
+// create and add a plane with the current shader
 function setMeshPlane() {
   removeCurrentMesh();
   var geo = new THREE.PlaneGeometry(1,1);
@@ -153,6 +168,7 @@ function setMeshPlane() {
   updateShader();
   scene.add(mesh);
 }
+// create and add a sphere with the current shader
 function setMeshSphere() {
   removeCurrentMesh();
   var geo = new THREE.SphereGeometry(0.5,64,64);
@@ -162,6 +178,8 @@ function setMeshSphere() {
   scene.add(mesh);
 }
 
+// creates a new shader material and sets it as the current mesh's material;
+// need to do this as we can't update the existing shader program
 function updateShader() {
   if (!mesh) return;
   var vert = document.getElementById("vertShader").value;
@@ -177,6 +195,7 @@ function updateShader() {
   mesh.material = material;
 }
 
+// gui shader-saving functions
 function saveVertShader() { saveShader("vertex"); }
 function saveFragShader() { saveShader("fragment"); }
 function saveShader(type) {
@@ -184,6 +203,7 @@ function saveShader(type) {
   var source = document.getElementById(type=="vertex" ? "vertShader" : "fragShader");
   var blob = new Blob([source.value], { type: 'text/plain' });
 
+  // magic code that works
   var a = document.createElement("a");
   if (window.navigator.msSaveOrOpenBlob) { // IE :(
     window.navigator.msSaveOrOpenBlob(blob, fname);
@@ -200,29 +220,33 @@ function saveShader(type) {
     });
   }
 }
+// sets camera to the original orientation and radius
 function resetCamera() {
   controls.r = 2;
   controls.phi = Math.PI/2;
   controls.theta = Math.PI/2;
 }
 
+// reset all animation-related values
 function resetOffset() {
   offset.x = 0;
   offset.y = 0;
   offset.z = 0;
 }
+// (optionally set the animation rates)
 function resetOffsetRates(x, y, z) {
   offsetRateX = x===undefined ? 0 : x;
   offsetRateY = y===undefined ? 0 : y;
   offsetRateZ = z===undefined ? 0 : z;
   for (var i=0; i<offsetRateControls.length; i++) offsetRateControls[i].updateDisplay();
 }
-
 function resetAnimation(xr, yr, zr) {
   resetOffsetRates(xr, yr, zr);
   resetOffset();
 }
 
+// need to make it so that tab doesn't leave the text field and enable
+// Shift+Enter hotkey to update the shader
 document.getElementById("vertShader").addEventListener("keydown", handleKeyDownVert, false);
 document.getElementById("fragShader").addEventListener("keydown", handleKeyDownFrag, false);
 function handleKeyDownVert(e) { handleKeyDown("vertex", e); }
@@ -243,6 +267,8 @@ function handleKeyDown(type, e) {
     updateShader();
   }
 }
+
+/* SHADER-LOADING FUNCTIONS */
 
 function loadDefault() {
   resetAnimation();
