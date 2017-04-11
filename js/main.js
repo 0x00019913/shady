@@ -14,7 +14,7 @@ function init() {
   height = container.offsetHeight;
   width = container.offsetWidth;
 
-  camera = new THREE.PerspectiveCamera(45, width/height, .1, 100000);
+  camera = new THREE.PerspectiveCamera(45, width/height, .01, 100);
 
   scene = new THREE.Scene();
 
@@ -67,6 +67,7 @@ function init() {
       phi: Math.PI/2,
       theta: Math.PI/2,
       r: 2,
+      rMin: 0.1,
       rMax: 10,
       xPanRate: 0,
       yPanRate: 0

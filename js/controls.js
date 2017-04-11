@@ -30,9 +30,6 @@
 // the mouse moves the camera. Detects WASD; responses to each of these are set
 // by the physics engine.
 
-// need to offset some default limits to prevent gimbal lock
-epsilon = .01;
-
 //  constructor
 //  arguments:
 //    camera: THREE.Camera
@@ -43,6 +40,9 @@ Controls = function(camera, domElement, params) {
   this.objects = [];
   this.camera = camera;
   this.domElement = (domElement!==undefined) ? domElement : document;
+
+  // need to offset some default limits to prevent gimbal lock
+  this.epsilon = .001;
 
   this.responses = {};
 
@@ -253,10 +253,10 @@ Controls.prototype.setDefaults = function(type) {
     this.xPanRate = 0.01;
     this.yPanRate = 0.01;
 
-    this.rMin = epsilon;
+    this.rMin = this.epsilon;
     this.rMax = Infinity;
-    this.thetaMin = epsilon;
-    this.thetaMax = Math.PI-epsilon;
+    this.thetaMin = this.epsilon;
+    this.thetaMax = Math.PI-this.epsilon;
 
     this.origin = new THREE.Vector3(0,0,0);
   }
@@ -276,14 +276,14 @@ Controls.prototype.setDefaults = function(type) {
     this.tthetaRate = -1;
     this.tphiRate = -0.5;
 
-    this.rMin = epsilon;
+    this.rMin = this.epsilon;
     this.rMax = Infinity;
     this.phiMin = -Infinity;
     this.phiMax = Infinity;
     this.zMin = -Infinity;
     this.zMax = Infinity;
-    this.tthetaMin = epsilon;
-    this.tthetaMax = Math.PI-epsilon;
+    this.tthetaMin = this.epsilon;
+    this.tthetaMax = Math.PI-this.epsilon;
     this.target = new THREE.Vector3(0,0,0);
   }
   else if (type == "PlayerCam") {
@@ -296,8 +296,8 @@ Controls.prototype.setDefaults = function(type) {
     this.thetaRate = 0.005;
     this.phiRate = 0.001;
 
-    this.thetaMin = epsilon;
-    this.thetaMax = Math.PI-epsilon;
+    this.thetaMin = this.epsilon;
+    this.thetaMax = Math.PI-this.epsilon;
     this.target = new THREE.Vector3(0,0,0);
   }
   else {
