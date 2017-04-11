@@ -4,6 +4,8 @@ var mesh;
 var offset, offsetRateX, offsetRateY, offsetRateZ, offsetRateControls = [];
 var gui;
 var bgColor0, bgColor1;
+var bgColor0Uni = new THREE.Color(), bgColor1Uni = new THREE.Color();
+var bgColorControllers = [];
 container = document.getElementById('container');
 
 init();
@@ -49,14 +51,10 @@ function init() {
   // the other a THREE.Color to pass as a uniform (the color displayed in the
   // gui feeds off the string, but changing the field also updates the
   // THREE.Color, see below)
-  bgColor0 = "#23272d";
-  bgColor1 = "#64717a";
-  var bgColor0Uni = new THREE.Color(bgColor0);
-  var bgColor1Uni = new THREE.Color(bgColor1);
-  backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
-  backgroundFolder.addColor(this, "bgColor1").onChange(setColor1Uni);
-  function setColor0Uni() { bgColor0Uni.set(bgColor0); }
-  function setColor1Uni() { bgColor1Uni.set(bgColor1); }
+  resetBackground();
+  bgColorControllers[0] = backgroundFolder.addColor(this, "bgColor0").onChange(setColor0Uni);
+  bgColorControllers[1] = backgroundFolder.addColor(this, "bgColor1").onChange(setColor1Uni);
+  backgroundFolder.add(this, "resetBackground");
 
   // set up controls; see setDefaults() in controls.js for settable parameters
   controls = new Controls(
@@ -244,6 +242,17 @@ function resetOffsetRates(x, y, z) {
 function resetAnimation(xr, yr, zr) {
   resetOffsetRates(xr, yr, zr);
   resetOffset();
+}
+
+// setting background shader stuff
+function setColor0Uni() { bgColor0Uni.set(bgColor0); }
+function setColor1Uni() { bgColor1Uni.set(bgColor1); }
+function resetBackground() {
+  bgColor0 = "#23272d";
+  setColor0Uni();
+  bgColor1 = "#64717a";
+  setColor1Uni();
+  for (var i=0; i<bgColorControllers.length; i++) bgColorControllers[i].updateDisplay();
 }
 
 // need to make it so that tab doesn't leave the text field and enable
